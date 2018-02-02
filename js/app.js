@@ -47,7 +47,7 @@ function createTodoItem(title) {
 function bindEvents(todoItem) {
     const checkbox = todoItem.querySelector('.checkbox');
     const editButton = todoItem.querySelector('button.edit');
-    const deleteButton = todoItem.querySelector('.button.delete');
+    const deleteButton = todoItem.querySelector('button.delete');
 
     checkbox.addEventListener('change', toggleTodoItem);
     editButton.addEventListener('click', editTodoItem);
@@ -66,21 +66,34 @@ function addTodoItem(event) {
 }
 
 // функция события ckeckbox
-function toggleTodoItem(event) {
-    console.log(event.target);
-    console.log(this);
+function toggleTodoItem() {
+    const listItem = this.parentNode;
+    listItem.classList.toggle('completed');
 }
 
 // функция события кнопки "изменить"
-function editTodoItem(event) {
-    console.log(event.target);
-    console.log(this);
+function editTodoItem() {
+    const listItem = this.parentNode;
+    const title = listItem.querySelector('.title');
+    const editInput = listItem.querySelector('.textfield');
+    const isEditing = listItem.classList.contains('editing');
+
+    // если есть класс (), то меняем текст в листе задачи
+    if(isEditing){
+        title.innerText = editInput.value;
+        this.innerText = 'Изменить';
+    } else {
+        editInput.value = title.innerText;
+        this.innerText = 'Сохранить';
+    }
+
+    listItem.classList.toggle('editing');
 }
 
 // функция события кнопки "удалить"
-function deleteTodoItem(event) {
-    console.log(event.target);
-    console.log(this);
+function deleteTodoItem() {
+    const listItem = this.parentNode;
+    todoList.removeChild(listItem);
 }
 
 // константы
@@ -89,5 +102,10 @@ const addInput = document.getElementById('add-input');
 const todoList = document.getElementById('todo-list');
 const todoItems = document.querySelectorAll('.todo-item');
 
-//событие отправки формы
-todoForm.addEventListener('submit', addTodoItem);
+// запуск всех функций после загрузки страницы
+function main(){
+    todoForm.addEventListener('submit', addTodoItem);
+    todoItems.forEach(item => bindEvents(item));
+}
+
+main();
